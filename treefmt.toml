@@ -1,0 +1,55 @@
+# https://github.com/numtide/treefmt-nix/tree/main/examples
+
+[formatter.black]
+command = "black"
+excludes = []
+includes = ["*.py", "*.pyi"]
+options = []
+
+[formatter.dockfmt]
+command = "dockfmt"
+excludes = []
+includes = ["Dockerfile", "*.Dockerfile", "Dockerfile.*"]
+options = ["fmt", "-w"]
+
+[formatter.isort]
+command = "isort"
+excludes = []
+includes = ["*.py", "*.pyi"]
+options = []
+
+[formatter.nixfmt]
+command = "nixfmt"
+options = []
+includes = ["*.nix"]
+excludes = []
+priority = 0
+
+[formatter.terraform]
+command = "tofu"
+excludes = []
+includes = ["*.tf", "*.tfvars", "*.tftest.hcl"]
+options = ["fmt"]
+
+[formatter.prettier]
+command = "prettier"
+excludes = []
+includes = [
+  "*.cjs",
+  "*.css",
+  "*.html",
+  "*.js",
+  "*.json",
+  "*.json5",
+  "*.jsx",
+  "*.md",
+  "*.mdx",
+  "*.mjs",
+  "*.scss",
+  "*.ts",
+  "*.tsx",
+  "*.vue",
+  "*.yaml",
+  "*.yml",
+]
+options = ["--write"]
