@@ -1,20 +1,33 @@
 {
-  description = "Flake utils demo";
+  description = "orbtronic l1 software engineer";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system}; in
-      {
-        packages = rec {
-          hello = pkgs.hello;
-          default = hello;
+      let pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        devShells = {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              black
+              dockfmt
+              isort
+              nixfmt-rfc-style
+              opentofu
+              prettier
+
+              poetry
+              python313
+
+              bun
+
+              awscli2
+              openapi-tui
+              terraform
+              treefmt
+            ];
+          };
         };
-        apps = rec {
-          hello = flake-utils.lib.mkApp { drv = self.packages.${system}.hello; };
-          default = hello;
-        };
-      }
-    );
+      });
 }
