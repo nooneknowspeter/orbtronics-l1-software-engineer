@@ -1,5 +1,4 @@
 # lsp artifacts
-pyrightconfig.json
 .null-ls*
 
 # python artifacts
