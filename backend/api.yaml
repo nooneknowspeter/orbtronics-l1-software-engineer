@@ -1,0 +1,377 @@
+openapi: 3.1.0
+info:
+  title: Orbtronics L1 Software Engineer Backend
+  description: Technical Design Round Backend
+  version: 0.1.0
+tags:
+  - name: users
+    description: user accounts
+  - name: tasks
+    description: user tasks
+servers:
+  - url: http://localhost:8000/api
+    description: development environment
+
+paths:
+  /auth/signup:
+    post:
+      operationId: userSignup
+      description: create user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSignupInput"
+      responses:
+        "201":
+          description: created user successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+        "400":
+          description: invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: user already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: userLogin
+      description: login to existing user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginInput"
+      responses:
+        "200":
+          description: logged in as user successfully
+          headers:
+            Set-Cookie:
+              description: HttpOnly JWT cookie
+              schema:
+                type: string
+                example: "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Path=/; Max-Age=3600"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+        "400":
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /whoami:
+    get:
+      operationId: getUserInformation
+      description: get currently logged in user information
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: current user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserData"
+        "401":
+          description: missing or invalid JWT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tasks:
+    post:
+      operationId: createTask
+      description: create a new task
+      tags:
+        - tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskDataInput"
+      responses:
+        "201":
+          description: task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskData"
+
+    get:
+      operationId: readAllTasks
+      description: get all tasks owned by the user (with filters)
+      tags:
+        - tasks
+      parameters:
+        - name: status
+          in: query
+          description: filter by task status
+          required: false
+          schema:
+            type: string
+            enum: [todo, in_progress, done]
+        - name: due
+          in: query
+          description: filter by due date range
+          required: false
+          schema:
+            type: string
+            enum: [overdue, today, week, all]
+        - name: limit
+          in: query
+          description: max number of results
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: pagination offset
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        "200":
+          description: list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaskData"
+
+  /tasks/{taskId}:
+    patch:
+      operationId: updateTask
+      description: update a task (partial update)
+      tags:
+        - tasks
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskDataPartial"
+      responses:
+        "200":
+          description: update task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskData"
+        "401":
+          description: failed to update task
+          content:
+            application/json:
+              schema:
+
+    delete:
+      operationId: deleteTask
+      description: delete task
+      tags:
+        - tasks
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: task deleted successfully
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: "Unauthorized: invalid token"
+      required:
+        - code
+        - message
+
+    UserSignupInput:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "orbtronics"
+        email:
+          type: string
+          format: email
+          example: "interview@orbtronics.com"
+        password:
+          type: string
+          example: "interview"
+      required:
+        - username
+        - email
+        - password
+
+    UserLoginInput:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "orbtronics"
+        password:
+          type: string
+          example: "interview"
+      required:
+        - username
+        - password
+
+    UserAuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserData"
+        accessToken:
+          type: string
+          description: JWT access token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      required:
+        - user
+        - accessToken
+
+    UserData:
+      type: object
+      description: user data
+      properties:
+        userId:
+          type: string
+          example: "64d2f9c8e13b4a0012345678"
+        username:
+          type: string
+          example: "orbtronics"
+        email:
+          type: string
+          format: email
+          example: "interview@orbtronics.com"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-09-06T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-09-06T13:00:00Z"
+      required:
+        - userId
+        - username
+        - email
+
+    TaskData:
+      type: object
+      properties:
+        taskId:
+          type: string
+          example: "64d2fa01e13b4a0012345679"
+        userId:
+          type: string
+          example: "64d2f9c8e13b4a0012345678"
+        title:
+          type: string
+          example: "Technical Interview"
+        description:
+          type: string
+          example: "Due in 5 days"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          example: "high"
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+          example: "todo"
+        dueDate:
+          type: string
+          format: date-time
+          example: "2025-09-11T00:00:00Z"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - taskId
+        - userId
+        - title
+        - status
+
+    TaskDataInput:
+      allOf:
+        - $ref: "#/components/schemas/TaskData"
+      required:
+        - title
+        - status
+
+    TaskDataPartial:
+      type: object
+      description: partial update schema
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high]
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+        dueDate:
+          type: string
+          format: date-time
