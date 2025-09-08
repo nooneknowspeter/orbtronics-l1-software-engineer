@@ -21,7 +21,7 @@ dependencies = [
 
 [tool.poetry]
 packages = [{include = "orbtronics_l1_software_engineer_backend", from = "src"}]
-package-mode = false
+package-mode = true
 
 
 [build-system]
