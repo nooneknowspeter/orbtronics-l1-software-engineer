@@ -1,1 +1,5 @@
+# direnv artifacts
 .direnv
+
+# environment files
+.env*
