@@ -23,6 +23,7 @@
               bun
 
               awscli2
+              mongosh
               openapi-tui
               terraform
               treefmt
