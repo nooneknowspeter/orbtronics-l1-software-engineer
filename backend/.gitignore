@@ -1,3 +1,8 @@
 # lsp artifacts
 pyrightconfig.json
 .null-ls*
+
+# python artifacts
+.venv
+venv
+__pycache__
