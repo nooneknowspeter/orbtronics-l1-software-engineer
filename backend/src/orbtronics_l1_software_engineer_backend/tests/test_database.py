@@ -1,18 +1,14 @@
 import os
 
-import pymongo
 import pytest
-from orbtronics_l1_software_engineer_backend.helpers import environment
+from orbtronics_l1_software_engineer_backend.helpers.database import \
+    test_database
 
-print(environment.MONGO_CONNECTION_URI)
-
-client = pymongo.MongoClient(environment.MONGO_CONNECTION_URI)
-database = client.test
-collection = database.test_collection
+collection = test_database["test_collection"]
 
 
 def test_databaseConnection():
-    assert database.name == "test"
+    assert test_database.name == "test"
 
 
 def test_createDatabaseDocument():
