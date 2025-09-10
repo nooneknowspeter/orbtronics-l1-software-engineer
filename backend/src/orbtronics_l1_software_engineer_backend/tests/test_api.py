@@ -50,3 +50,21 @@ def testUserSignUp():
     print()
     for key in response_user_data:
         print(f"{key}: {response_user_data[key]}")
+
+
+def testUserLogin():
+    response = requests.post(
+        API_ENDPOINT + "/auth/login",
+        json={
+            "username": test_user["username"],
+            "password": test_user["password"],
+        },
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    test_user["access_token"] = response.cookies["access_token"]
+
+    print()
+    for key, value in response.cookies.items():
+        print(f"{key}: {value}")
