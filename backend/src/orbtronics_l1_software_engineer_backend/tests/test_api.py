@@ -22,6 +22,13 @@ test_user = {
     "access_token": "",
 }
 
+test_tasks = {
+    "no_due_date": Task(),
+    "due_today": Task(due=TaskDueEnum.today),
+    "due_this_week": Task(due=TaskDueEnum.week),
+    "overdue": Task(due=TaskDueEnum.overdue),
+}
+
 
 def testServerHealthCheck():
     response = requests.get(API_ENDPOINT + "/ping")
@@ -90,3 +97,101 @@ def testGetLoggedInUserData():
     assert response.json()["user_id"] == test_user["user_id"]
     assert response.json()["username"] == test_user["username"]
     assert response.json()["email"] == test_user["email"]
+
+
+# tasks
+def testCreateTasks():
+    for task in test_tasks.values():
+        response = requests.post(
+            API_ENDPOINT + "/tasks",
+            cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+            json=task.taskToDict(),
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+
+        task.updateTaskId(task_id=response.json()["task_id"])
+
+
+def testReadTasks():
+    response = requests.get(
+        API_ENDPOINT + "/tasks",
+        cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+
+def testReadOverdueTasks():
+    response = requests.get(
+        API_ENDPOINT + f"/tasks?due={TaskDueEnum.overdue.value}",
+        cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    print()
+    for task in response.json():
+        print(task)
+
+
+def testReadDueWeeklyTasks():
+    response = requests.get(
+        API_ENDPOINT + f"/tasks?due={TaskDueEnum.week.value}",
+        cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    print()
+    for task in response.json():
+        print(task)
+
+
+def testReadDueTodayTasks():
+    response = requests.get(
+        API_ENDPOINT + f"/tasks?due={TaskDueEnum.today.value}",
+        cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    print()
+    for task in response.json():
+        print(task)
+
+
+def testReadHighPriorityTasks():
+    response = requests.get(
+        API_ENDPOINT + f"/tasks?priority={TaskPriorityEnum.high.value}",
+        cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    print()
+    for task in response.json():
+        print(task)
+
+
+def testUpdateTasks():
+    for task in test_tasks.values():
+        task.randomizeTask()
+
+        response = requests.patch(
+            API_ENDPOINT + f"/tasks/{task.id}",
+            cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+            json=task.taskToDict(),
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+
+
+def testDeleteTasks():
+    for task in test_tasks.values():
+        response = requests.delete(
+            API_ENDPOINT + f"/tasks/{task.id}",
+            cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+        )
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT
