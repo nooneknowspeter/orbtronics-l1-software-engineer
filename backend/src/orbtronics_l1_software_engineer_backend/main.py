@@ -15,4 +15,5 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
+app.include_router(auth.router)
 app.include_router(health.router)
