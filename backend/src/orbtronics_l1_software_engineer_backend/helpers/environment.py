@@ -22,13 +22,16 @@ def loadEnvironmentFiles():
 
 loadEnvironmentFiles()
 
-FRONTEND_URL = os.getenv("FRONTEND_URL")
-SERVER_PORT = os.getenv("SERVER_PORT")
-JWT_SECRET = os.getenv("JWT_SECRET")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-ACCESS_TOKEN_EXPIRES_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES")
-COOKIE_NAME = os.getenv("COOKIE_NAME")
-MONGO_INITDB_ROOT_USERNAME = os.getenv("MONGO_INITDB_ROOT_USERNAME")
-MONGO_INITDB_ROOT_PASSWORD = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
-MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME")
-MONGO_CONNECTION_URI = os.getenv("MONGO_CONNECTION_URI")
+
+variable_names: list[str] = []
+
+with open(".env.example") as file:
+    lines = file.readlines()
+
+    for line in lines:
+        env_var = line.split("=")[0]
+        variable_names.append(env_var)
+
+variables: dict[str, str] = {
+    variables_name: str(os.getenv(variables_name)) for variables_name in variable_names
+}
