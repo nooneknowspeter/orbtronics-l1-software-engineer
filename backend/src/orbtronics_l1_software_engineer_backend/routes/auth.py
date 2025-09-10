@@ -1,3 +1,4 @@
+from orbtronics_l1_software_engineer_backend.helpers import environment
 router = APIRouter(prefix="/api", tags=["users"])
 
 
@@ -33,5 +34,39 @@ def signup(payload: UserSignupInput) -> dict[str, dict[str, str] | str]:
 
     token = createAccessToken(subject=str(database_entry.inserted_id))
     response = userDocumentToResponse(user_document)
+
+    return {"user": response, "access_token": token}
+
+
+@router.post("/auth/login", response_model=UserAuthResponse, tags=["users"])
+def login(
+    payload: UserLoginInput, http_response: Response
+) -> dict[str, dict[str, str] | str]:
+    user = users_collection.find_one({"username": payload.username})
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid credentials"
+        )
+
+    if not verifyPassword(payload.password, user["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid credentials"
+        )
+
+    token = createAccessToken(subject=str(user["_id"]))
+    max_age = int(str(environment.variables.get("ACCESS_TOKEN_EXPIRES_MINUTES"))) * 60
+
+    http_response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        max_age=max_age,
+        secure=False,
+        samesite="lax",
+        path="/",
+    )
+
+    response = userDocumentToResponse(user)
 
     return {"user": response, "access_token": token}
