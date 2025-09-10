@@ -10,4 +10,6 @@ lsp:
 	chmod +x ./scripts/pyrightconfig.sh
 	./scripts/pyrightconfig.sh
 tests:
-	poetry run pytest -v
+	poetry run pytest -v -s
+api:
+	openapi-tui -i api.yaml
