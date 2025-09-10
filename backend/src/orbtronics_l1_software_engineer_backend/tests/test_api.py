@@ -78,3 +78,15 @@ def testJWTTokenCryptography():
     print()
     for key, value in decrypted_data.items():
         print(f"{key}: {value}")
+
+
+def testGetLoggedInUserData():
+    response = requests.get(
+        API_ENDPOINT + "/whoami",
+        cookies=cookiejar_from_dict({"access_token": test_user["access_token"]}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["user_id"] == test_user["user_id"]
+    assert response.json()["username"] == test_user["username"]
+    assert response.json()["email"] == test_user["email"]
