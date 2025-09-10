@@ -68,3 +68,13 @@ def testUserLogin():
     print()
     for key, value in response.cookies.items():
         print(f"{key}: {value}")
+
+
+def testJWTTokenCryptography():
+    decrypted_data = decodeAccessToken(test_user["access_token"])
+
+    assert decrypted_data["sub"] == test_user["user_id"]
+
+    print()
+    for key, value in decrypted_data.items():
+        print(f"{key}: {value}")
