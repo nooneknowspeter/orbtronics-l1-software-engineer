@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -18,13 +20,13 @@ class UserLoginInput(BaseModel):
 
 
 class UserData(BaseModel):
-    userId: str
+    user_id: str
     username: str
     email: EmailStr
-    createdAt: str
-    updatedAt: str
+    created_at: datetime | str
+    updated_at: datetime | str
 
 
 class UserAuthResponse(BaseModel):
     user: UserData
-    accessToken: str
+    access_token: str
