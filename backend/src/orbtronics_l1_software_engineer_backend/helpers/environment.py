@@ -2,6 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
+EXAMPLE_ENVIRONMENT_FILE = "example.env"
+
 
 def loadEnvironmentFiles():
     mono_repo_env_file = ".env"
@@ -25,7 +27,7 @@ loadEnvironmentFiles()
 
 variable_names: list[str] = []
 
-with open(".env.example") as file:
+with open(EXAMPLE_ENVIRONMENT_FILE) as file:
     lines = file.readlines()
 
     for line in lines:
