@@ -117,3 +117,50 @@ poetry run fastapi dev ./src/orbtronics_l1_software_engineer_backend/main.py
 # production server
 poetry run fastapi run ./src/orbtronics_l1_software_engineer_backend/main.py
 ```
+
+### AWS + Terraform
+
+> [!NOTE]
+>
+> Ensure that the AWS CLI is installed and configured
+
+Create a `terraform.tfvars` in `./infrastructure/`
+
+```terraform
+# example terraform.tfvars
+access_token_expires_minutes=60
+aws_instance_ami="ami-0360c520857e3138f"
+aws_key_pair_algorithm="RSA || ED25519"
+aws_key_pair_name="key-name"
+backend_url="url"
+frontend_url="url"
+jwt_algorithm="algorithm"
+jwt_secret="secret"
+me_config_basicauth_password="password"
+me_config_basicauth_username="username"
+mongo_database_name="database"
+mongo_initdb_root_password="password"
+mongo_initdb_root_username="username"
+```
+
+Then plan and apply as usual.
+
+```sh
+terraform plan
+terraform apply
+```
+
+> [!NOTE]
+>
+> The created instance can be access through `ssh`.
+>
+> Save a `private-key.pem` from the `terraform output`.
+> Follow this [script](./infrastructure/scripts/extract-pem-key.sh) for reference
+>
+> Then `ssh` into the instance using
+> `ssh -i private-key.pem ubuntu@instance_elastic_public_ip`
+
+> [!NOTE]
+>
+> The instance needs some time to execute the [user data script](./infrastructure/instance.tf.
+> If it fails, the commands need to be ran manually through `ssh`.
