@@ -11,6 +11,12 @@ variable "aws_key_pair_name" {
   default  = "terraform-key"
 }
 
+variable "aws_key_pair_algorithm" {
+  type     = string
+  nullable = false
+  default  = "ED25519"
+}
+
 resource "aws_instance" "this" {
   ami                         = var.aws_instance_ami
   instance_type               = "t2.micro"
@@ -23,7 +29,7 @@ resource "aws_instance" "this" {
 }
 
 resource "tls_private_key" "this" {
-  algorithm = "ED25519"
+  algorithm = var.aws_key_pair_algorithm
 }
 
 resource "aws_key_pair" "this" {
