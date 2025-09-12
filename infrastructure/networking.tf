@@ -40,6 +40,14 @@ resource "aws_security_group" "this" {
   }
 
   ingress {
+    description = "database admin"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "ssh"
     from_port   = 22
     to_port     = 22
