@@ -12,6 +12,12 @@ terraform {
       version = "4.0.6"
     }
   }
+
+  backend "s3" {
+    bucket = "orbtronics"
+    region = "us-east-1"
+    key    = "app-state"
+  }
 }
 
 provider "tls" {}
