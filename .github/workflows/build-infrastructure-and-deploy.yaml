@@ -1,0 +1,75 @@
+name: Continuous Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    # paths: ["infrastructure/**"]
+
+  pull_request:
+    branches: [main]
+    # paths: ["infrastructure/**"]
+
+env:
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_INSTANCE_AMI: ${{ vars.AWS_INSTANCE_AMI }}
+  AWS_KEY_PAIR_ALGORITHM: ${{ vars.AWS_KEY_PAIR_ALGORITHM }}
+  AWS_KEY_PAIR_NAME: ${{ vars.AWS_KEY_PAIR_NAME }}
+
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 18
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Initialise project and view terraform plan
+        run: |
+          cd infrastructure
+          terraform init
+          echo 'aws_instance_ami="${{ env.AWS_INSTANCE_AMI }}"' >> terraform.tfvars
+          echo 'aws_key_pair_algorithm="${{ env.AWS_KEY_PAIR_ALGORITHM }}"' >> terraform.tfvars
+          echo 'aws_key_pair_name="${{ env.AWS_KEY_PAIR_NAME }}"' >> terraform.tfvars
+          terraform plan
+
+  deploy:
+    name: Terraform Deploy
+    needs: plan
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 18
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Initialise project and deploy terraform
+        run: |
+          cd infrastructure
+          terraform init
+          echo 'aws_instance_ami="${{ env.AWS_INSTANCE_AMI }}"' >> terraform.tfvars
+          echo 'aws_key_pair_algorithm="${{ env.AWS_KEY_PAIR_ALGORITHM }}"' >> terraform.tfvars
+          echo 'aws_key_pair_name="${{ env.AWS_KEY_PAIR_NAME }}"' >> terraform.tfvars
+          terraform apply -auto-approve
+          terraform output -raw aws_key_pair_private_key
