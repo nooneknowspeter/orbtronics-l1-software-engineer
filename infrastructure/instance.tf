@@ -25,7 +25,20 @@ resource "aws_instance" "this" {
   security_groups             = [aws_security_group.this.id]
   key_name                    = aws_key_pair.this.key_name
   user_data_replace_on_change = true
-  user_data                   = file("./scripts/init.sh")
+  user_data                   = <<-EOF
+    #!/usr/bin/env bash
+
+    sudo apt update && sudo apt upgrade -y
+
+    sudo apt install -y neofetch direnv nix-bin make
+
+    sudo snap install docker
+
+    git clone https://github.com/nooneknowspeter/orbtronics-l1-software-engineer.git app
+    cd app
+
+    sudo make
+  EOF
 }
 
 resource "tls_private_key" "this" {
