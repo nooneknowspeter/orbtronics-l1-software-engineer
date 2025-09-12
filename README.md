@@ -197,3 +197,31 @@ graph TB
     end
 
 ```
+
+#### Diagram Showing Database Schema
+
+```mermaid
+erDiagram
+    USERS {
+        string _id PK
+        string username UK
+        string email UK
+        string hashed_password
+        string created_at
+        string updated_at
+    }
+
+    TASKS {
+        string _id PK
+        string user_id FK
+        string title
+        string description
+        string priority
+        string status
+        string due_date
+        string created_at
+        string updated_at
+    }
+
+    USERS ||--o{ TASKS : ""
+```
