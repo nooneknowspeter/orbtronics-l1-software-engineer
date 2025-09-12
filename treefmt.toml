@@ -6,6 +6,12 @@ excludes = []
 includes = ["*.py", "*.pyi"]
 options = []
 
+[formatter.checkmake]
+command = "checkmake"
+excludes = []
+includes = ["Makefile", "*.make"]
+options = []
+
 [formatter.dockfmt]
 command = "dockfmt"
 excludes = []

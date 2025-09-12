@@ -19,6 +19,7 @@
           default = pkgs.mkShell {
             packages = with pkgs; [
               black
+              checkmake
               dockfmt
               isort
               nixfmt-rfc-style
