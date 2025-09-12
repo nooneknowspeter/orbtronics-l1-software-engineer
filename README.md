@@ -164,3 +164,36 @@ terraform apply
 >
 > The instance needs some time to execute the [user data script](./infrastructure/instance.tf.
 > If it fails, the commands need to be ran manually through `ssh`.
+
+## Solutions Architecture
+
+#### Diagram Showing Infrastructure
+
+```mermaid
+
+graph TB
+
+    Internet[Internet]
+    Internet -->|Inbound traffic| InternetGateway
+    InternetGateway -->|Outbound traffic| Internet
+
+    subgraph VPC[VPC]
+        InternetGateway[Internet Gateway]
+        RouteTable[Route Table\n0.0.0.0/0]
+
+        Subnet[Subnet]
+        Firewall[Security Group]
+        EC2[EC2 Instance]
+
+        InternetGateway --> RouteTable
+        RouteTable --> Subnet
+        Subnet --> Firewall
+        Firewall --> EC2
+
+        EC2 --> Firewall
+        Firewall --> Subnet
+        Subnet --> RouteTable
+        RouteTable --> InternetGateway
+    end
+
+```
