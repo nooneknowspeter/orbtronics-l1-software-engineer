@@ -71,3 +71,49 @@ Ensure the following dependencies are installed:
 > ```sh
 > nix develop
 > ```
+
+#### Backend
+
+> [!NOTE]
+>
+> A port forwarded MongoDB instance must be available.
+>
+> A database service can be ran with the dev `compose.yaml` using
+> `docker compose run database`. However the backend service is dependent on it.
+> Port `8000` has to be blocked before launching the service;
+> run the local instance of the server.
+
+Create a `.env` in the `./backend` directory.
+
+```env
+FRONTEND_URL=http://localhost:4173
+JWT_SECRET=secret
+JWT_ALGORITHM=algorithm
+ACCESS_TOKEN_EXPIRES_MINUTES=60
+MONGO_INITDB_ROOT_USERNAME=orbtronics
+MONGO_INITDB_ROOT_PASSWORD=interview
+MONGO_DATABASE_NAME=minitasks
+MONGO_CONNECTION_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017
+```
+
+Install dependencies:
+
+```sh
+poetry install
+```
+
+Then run the server:
+
+> [!NOTE]
+>
+> A [`Makefile`](./backend/Makefile) is available.
+
+```sh
+# development server
+poetry run fastapi dev ./src/orbtronics_l1_software_engineer_backend/main.py
+```
+
+```sh
+# production server
+poetry run fastapi run ./src/orbtronics_l1_software_engineer_backend/main.py
+```
