@@ -18,6 +18,7 @@
         devShells = {
           default = pkgs.mkShell {
             packages = with pkgs; [
+              beautysh
               black
               checkmake
               dockfmt

@@ -1,4 +1,9 @@
 # https://github.com/numtide/treefmt-nix/tree/main/examples
+[formatter.beautysh]
+command = "beautysh"
+excludes = []
+includes = ["*.sh"]
+options = ["-i", "2"]
 
 [formatter.black]
 command = "black"
