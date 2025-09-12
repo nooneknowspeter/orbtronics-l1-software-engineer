@@ -17,10 +17,19 @@ variable "aws_key_pair_algorithm" {
   default  = "ED25519"
 }
 
+resource "aws_eip" "this" {
+  depends_on = [aws_instance.this]
+}
+
+resource "aws_eip_association" "this" {
+  allocation_id = aws_eip.this.id
+  instance_id   = aws_instance.this.id
+}
+
 resource "aws_instance" "this" {
   ami                         = var.aws_instance_ami
   instance_type               = "t2.micro"
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   subnet_id                   = aws_subnet.this.id
   security_groups             = [aws_security_group.this.id]
   key_name                    = aws_key_pair.this.key_name
@@ -61,6 +70,10 @@ resource "tls_private_key" "this" {
 resource "aws_key_pair" "this" {
   key_name   = var.aws_key_pair_name
   public_key = tls_private_key.this.public_key_openssh
+}
+
+output "aws_elastic_ip" {
+  value = aws_eip.this.public_ip
 }
 
 output "aws_instance_name" {
