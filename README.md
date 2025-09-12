@@ -44,3 +44,30 @@ The command below pulls the images from the projects
 ```sh
 docker compose -f compose.prod.yaml up
 ```
+
+### Manually
+
+#### Dependencies
+
+Ensure the following dependencies are installed:
+
+- Bun `1.2.21`
+- Poetry `2.1.4`
+- Python `3.13`
+
+> [!NOTE]
+>
+> A flake devShell is defined in a [`flake.nix`](./flake.nix)
+> that provides all required dependencies with the correct versions.
+>
+> Ensure that Nix [experimental-features](https://nixos.wiki/wiki/Flakes)
+> are enabled.
+>
+> For [`direnv`](https://github.com/direnv/direnv) users,
+> a [`.envrc`](./.envrc) is provided.
+>
+> To enter the devShell manually:
+>
+> ```sh
+> nix develop
+> ```
