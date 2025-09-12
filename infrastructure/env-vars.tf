@@ -1,0 +1,10 @@
+variable "access_token_expires_minutes" {}
+variable "backend_url" {}
+variable "frontend_url" {}
+variable "jwt_algorithm" {}
+variable "jwt_secret" {}
+variable "me_config_basicauth_password" {}
+variable "me_config_basicauth_username" {}
+variable "mongo_database_name" {}
+variable "mongo_initdb_root_password" {}
+variable "mongo_initdb_root_username" {}

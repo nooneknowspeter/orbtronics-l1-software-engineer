@@ -37,6 +37,19 @@ resource "aws_instance" "this" {
     git clone https://github.com/nooneknowspeter/orbtronics-l1-software-engineer.git app
     cd app
 
+    cat > .env << EOM
+    ACCESS_TOKEN_EXPIRES_MINUTES=${var.access_token_expires_minutes}
+    BACKEND_URL=${var.backend_url}
+    FRONTEND_URL=${var.frontend_url}
+    JWT_ALGORITHM=${var.jwt_algorithm}
+    JWT_SECRET=${var.jwt_secret}
+    ME_CONFIG_BASICAUTH_PASSWORD=${var.me_config_basicauth_password}
+    ME_CONFIG_BASICAUTH_USERNAME=${var.me_config_basicauth_username}
+    MONGO_DATABASE_NAME=${var.mongo_database_name}
+    MONGO_INITDB_ROOT_PASSWORD=${var.mongo_initdb_root_password}
+    MONGO_INITDB_ROOT_USERNAME=${var.mongo_initdb_root_username}
+    EOM
+
     sudo make
   EOF
 }
@@ -64,10 +77,6 @@ output "aws_instance_public_dns" {
 
 output "aws_instance_type" {
   value = aws_instance.this.instance_type
-}
-
-output "aws_instance_user_data" {
-  value = aws_instance.this.user_data
 }
 
 output "aws_key_pair_id" {
