@@ -25,12 +25,22 @@ on:
       - main
 
 env:
+  ACCESS_TOKEN_EXPIRES_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRES_MINUTES }}
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-  AWS_REGION: ${{ vars.AWS_REGION }}
   AWS_INSTANCE_AMI: ${{ vars.AWS_INSTANCE_AMI }}
   AWS_KEY_PAIR_ALGORITHM: ${{ vars.AWS_KEY_PAIR_ALGORITHM }}
   AWS_KEY_PAIR_NAME: ${{ vars.AWS_KEY_PAIR_NAME }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  BACKEND_URL: ${{ secrets.BACKEND_URL }}
+  FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+  JWT_ALGORITHM: ${{ vars.JWT_ALGORITHM }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  ME_CONFIG_BASICAUTH_PASSWORD: ${{ secrets.ME_CONFIG_BASICAUTH_PASSWORD }}
+  ME_CONFIG_BASICAUTH_USERNAME: ${{ secrets.ME_CONFIG_BASICAUTH_USERNAME }}
+  MONGO_DATABASE_NAME: ${{ secrets.MONGO_DATABASE_NAME }}
+  MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+  MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
 
 jobs:
   terraform:
@@ -53,9 +63,22 @@ jobs:
         run: |
           cd infrastructure
           terraform init
-          echo 'aws_instance_ami="${{ env.AWS_INSTANCE_AMI }}"' >> terraform.tfvars
-          echo 'aws_key_pair_algorithm="${{ env.AWS_KEY_PAIR_ALGORITHM }}"' >> terraform.tfvars
-          echo 'aws_key_pair_name="${{ env.AWS_KEY_PAIR_NAME }}"' >> terraform.tfvars
+
+          cat > terraform.tfvars << EOF
+          access_token_expires_minutes="${{ env.ACCESS_TOKEN_EXPIRES_MINUTES }}"
+          aws_instance_ami="${{ env.AWS_INSTANCE_AMI }}"
+          aws_key_pair_algorithm="${{ env.AWS_KEY_PAIR_ALGORITHM }}"
+          aws_key_pair_name="${{ env.AWS_KEY_PAIR_NAME }}"
+          backend_url="${{ env.BACKEND_URL }}"
+          frontend_url="${{ env.FRONTEND_URL }}"
+          jwt_algorithm="${{ env.JWT_ALGORITHM }}"
+          jwt_secret="${{ env.JWT_SECRET }}"
+          me_config_basicauth_password="${{ env.ME_CONFIG_BASICAUTH_PASSWORD }}"
+          me_config_basicauth_username="${{ env.ME_CONFIG_BASICAUTH_USERNAME }}"
+          mongo_database_name="${{ env.MONGO_DATABASE_NAME }}"
+          mongo_initdb_root_password="${{ env.MONGO_INITDB_ROOT_PASSWORD }}"
+          mongo_initdb_root_username="${{ env.MONGO_INITDB_ROOT_USERNAME }}"
+          EOF
 
           if [ "${{ github.event.inputs.action }}" = "plan" ]; then
             terraform plan
