@@ -1,0 +1,69 @@
+variable "aws_instance_ami" {
+  type        = string
+  nullable    = false
+  description = "ec2 instance ami"
+  default     = "ami-0360c520857e3138f" # https://cloud-images.ubuntu.com/locator/ec2/
+}
+
+variable "aws_key_pair_name" {
+  type     = string
+  nullable = false
+  default  = "terraform-key"
+}
+
+resource "aws_instance" "this" {
+  ami                         = var.aws_instance_ami
+  instance_type               = "t2.micro"
+  associate_public_ip_address = true
+  subnet_id                   = aws_subnet.this.id
+  security_groups             = [aws_security_group.this.id]
+  key_name                    = aws_key_pair.this.key_name
+  user_data_replace_on_change = true
+  user_data                   = file("./scripts/init.sh")
+}
+
+resource "tls_private_key" "this" {
+  algorithm = "ED25519"
+}
+
+resource "aws_key_pair" "this" {
+  key_name   = var.aws_key_pair_name
+  public_key = tls_private_key.this.public_key_openssh
+}
+
+output "aws_instance_name" {
+  value = aws_instance.this.id
+}
+
+output "aws_instance_public_ip" {
+  value = aws_instance.this.public_ip
+}
+
+output "aws_instance_public_dns" {
+  value = aws_instance.this.public_dns
+}
+
+output "aws_instance_type" {
+  value = aws_instance.this.instance_type
+}
+
+output "aws_instance_user_data" {
+  value = aws_instance.this.user_data
+}
+
+output "aws_key_pair_id" {
+  value = aws_key_pair.this.id
+}
+
+output "aws_key_pair_name" {
+  value = aws_key_pair.this.key_name
+}
+
+output "aws_key_pair_public_key" {
+  value = aws_key_pair.this.public_key
+}
+
+output "aws_key_pair_private_key" {
+  value     = tls_private_key.this.private_key_pem
+  sensitive = true
+}
