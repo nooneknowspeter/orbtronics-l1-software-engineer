@@ -1,4 +1,14 @@
 services:
+  frontend:
+    restart: always
+    ports:
+      - 3000:3000
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_URL: http://backend:8000
+
   backend:
     restart: always
     ports:
@@ -7,7 +17,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      FRONTEND_URL: ${FRONTEND_URL}
+      FRONTEND_URL: http://frontend:3000
       JWT_SECRET: ${JWT_SECRET}
       JWT_ALGORITHM: ${JWT_ALGORITHM}
       ACCESS_TOKEN_EXPIRES_MINUTES: ${ACCESS_TOKEN_EXPIRES_MINUTES}
