@@ -189,7 +189,7 @@ terraform apply
 
 > [!NOTE]
 >
-> The instance needs some time to execute the [user data script](./infrastructure/instance.tf.
+> The instance needs some time to execute the [user data script](./infrastructure/instance.tf).
 > If it fails, the commands need to be ran manually through `ssh`.
 
 ## Solutions Architecture
