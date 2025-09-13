@@ -74,6 +74,10 @@ output "aws_elastic_ip" {
   value = aws_eip.this.public_ip
 }
 
+output "aws_elastic_ip_dns" {
+  value = aws_eip.this.public_dns
+}
+
 output "aws_instance_name" {
   value = aws_instance.this.id
 }
