@@ -33,6 +33,14 @@ resource "aws_security_group" "this" {
   vpc_id = aws_vpc.this.id
 
   ingress {
+    description = "frontend"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "backend"
     from_port   = 8000
     to_port     = 8000
