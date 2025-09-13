@@ -17,7 +17,7 @@ Create a `.env` in the project directory.
 # example docker compose .env
 ACCESS_TOKEN_EXPIRES_MINUTES=60
 BACKEND_URL=http://localhost:8000
-FRONTEND_URL=http://localhost:4173
+FRONTEND_URL=http://localhost:3000
 JWT_ALGORITHM=algorithm
 JWT_SECRET=secret
 ME_CONFIG_BASICAUTH_PASSWORD=interview
@@ -86,7 +86,7 @@ Ensure the following dependencies are installed:
 Create a `.env` in the `./backend` directory.
 
 ```env
-FRONTEND_URL=http://localhost:4173
+FRONTEND_URL=http://localhost:3000
 JWT_SECRET=secret
 JWT_ALGORITHM=algorithm
 ACCESS_TOKEN_EXPIRES_MINUTES=60
@@ -116,6 +116,27 @@ poetry run fastapi dev ./src/orbtronics_l1_software_engineer_backend/main.py
 ```sh
 # production server
 poetry run fastapi run ./src/orbtronics_l1_software_engineer_backend/main.py
+```
+
+#### Frontend
+
+Create a `.env.development` and/or a `.env.production` in `./frontend/`.
+
+```env
+BACKEND_URL=http://localhost:8000
+```
+
+##### Dev
+
+```sh
+bun dev
+```
+
+##### Production
+
+```sh
+bun run build
+bun run start
 ```
 
 ### AWS + Terraform
