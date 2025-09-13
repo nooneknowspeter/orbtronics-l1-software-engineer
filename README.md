@@ -80,8 +80,8 @@ Ensure the following dependencies are installed:
 >
 > A database service can be ran with the dev `compose.yaml` using
 > `docker compose run database`. However the backend service is dependent on it.
-> Port `8000` has to be blocked before launching the service;
-> run the local instance of the server.
+>
+> The backend can be stopped with `docker compose stop backend`.
 
 Create a `.env` in the `./backend` directory.
 
