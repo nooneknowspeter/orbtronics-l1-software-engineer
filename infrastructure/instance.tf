@@ -43,8 +43,8 @@ resource "aws_instance" "this" {
 
     sudo snap install docker
 
-    git clone https://github.com/nooneknowspeter/orbtronics-l1-software-engineer.git app
-    cd app
+    git clone https://github.com/nooneknowspeter/orbtronics-l1-software-engineer.git /home/ubuntu/app
+    cd /home/ubuntu/app
 
     cat > .env << EOM
     ACCESS_TOKEN_EXPIRES_MINUTES=${var.access_token_expires_minutes}
