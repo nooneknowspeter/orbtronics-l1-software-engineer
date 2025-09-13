@@ -20,9 +20,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - infrastructure/**
+      - compose.prod.yaml
   pull_request:
     branches:
       - main
+    paths:
+      - infrastructure/**
+      - compose.prod.yaml
 
 env:
   ACCESS_TOKEN_EXPIRES_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRES_MINUTES }}
