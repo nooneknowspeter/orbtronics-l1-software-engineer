@@ -48,8 +48,6 @@ resource "aws_instance" "this" {
 
     cat > .env << EOM
     ACCESS_TOKEN_EXPIRES_MINUTES=${var.access_token_expires_minutes}
-    BACKEND_URL=${var.backend_url}
-    FRONTEND_URL=${var.frontend_url}
     JWT_ALGORITHM=${var.jwt_algorithm}
     JWT_SECRET=${var.jwt_secret}
     ME_CONFIG_BASICAUTH_PASSWORD=${var.me_config_basicauth_password}

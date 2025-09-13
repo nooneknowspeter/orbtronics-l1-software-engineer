@@ -1,6 +1,4 @@
 variable "access_token_expires_minutes" {}
-variable "backend_url" {}
-variable "frontend_url" {}
 variable "jwt_algorithm" {}
 variable "jwt_secret" {}
 variable "me_config_basicauth_password" {}
