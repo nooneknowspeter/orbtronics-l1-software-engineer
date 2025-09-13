@@ -16,8 +16,6 @@ Create a `.env` in the project directory.
 ```env
 # example docker compose .env
 ACCESS_TOKEN_EXPIRES_MINUTES=60
-BACKEND_URL=http://localhost:8000
-FRONTEND_URL=http://localhost:3000
 JWT_ALGORITHM=algorithm
 JWT_SECRET=secret
 ME_CONFIG_BASICAUTH_PASSWORD=interview
@@ -153,8 +151,6 @@ access_token_expires_minutes=60
 aws_instance_ami="ami-0360c520857e3138f"
 aws_key_pair_algorithm="RSA || ED25519"
 aws_key_pair_name="key-name"
-backend_url="url"
-frontend_url="url"
 jwt_algorithm="algorithm"
 jwt_secret="secret"
 me_config_basicauth_password="password"
