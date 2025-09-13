@@ -33,10 +33,12 @@
               bun
 
               awscli2
+              ffmpeg
               mongosh
               openapi-tui
               terraform
               treefmt
+              unp
             ];
           };
         };
