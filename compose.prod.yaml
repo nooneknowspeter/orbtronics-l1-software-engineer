@@ -1,11 +1,19 @@
 services:
+  frontend:
+    restart: always
+    ports:
+      - 3000:3000
+    image: ghcr.io/nooneknowspeter/orbtronics-l1-software-engineer/frontend:main
+    environment:
+      BACKEND_URL: http://backend:8000
+
   backend:
     restart: always
     ports:
       - 8000:8000
     image: ghcr.io/nooneknowspeter/orbtronics-l1-software-engineer/backend:main
     environment:
-      FRONTEND_URL: ${FRONTEND_URL}
+      FRONTEND_URL: http://frontend:3000
       JWT_SECRET: ${JWT_SECRET}
       JWT_ALGORITHM: ${JWT_ALGORITHM}
       ACCESS_TOKEN_EXPIRES_MINUTES: ${ACCESS_TOKEN_EXPIRES_MINUTES}
