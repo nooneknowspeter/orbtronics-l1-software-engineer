@@ -3,14 +3,17 @@ name: Docker
 on:
   schedule:
     - cron: "31 17 * * *"
+  workflow_dispatch:
   push:
     branches: ["main"]
     tags: ["v*.*.*"]
     paths:
+      - frontend/**
       - backend/**
   pull_request:
     branches: ["main"]
     paths:
+      - frontend/**
       - backend/**
 
 env:
@@ -26,7 +29,9 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        service: [backend]
+        service:
+          - frontend
+          - backend
 
     steps:
       - name: Checkout repository
