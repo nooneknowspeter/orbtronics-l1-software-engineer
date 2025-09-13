@@ -2,6 +2,16 @@
 
 [Technical Design Round Information](./docs/L1-Software-Engineer-Technical-Design-Round-Challenge_05_09_2025.pdf)
 
+[Frontend Live](http://ec2-18-210-134-224.compute-1.amazonaws.com:3000/)
+
+[API Live](http://ec2-18-210-134-224.compute-1.amazonaws.com:8000/)
+
+> [!NOTE]
+>
+> An [`api.yaml`](./backend/api.yaml) is available.
+> It describes the api and it's endpoints using the [OpenAPI Specification](https://swagger.io/specification/).
+> It can also be used in api-clients; Postman, Posting, OpenAPI TUI, ...
+
 ## Setup
 
 ### Docker Compose
