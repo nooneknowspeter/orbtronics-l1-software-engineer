@@ -188,6 +188,20 @@ terraform apply
 
 ## Solutions Architecture
 
+#### Diagram Showing Application Architecture
+
+```mermaid
+graph TD
+    User[User Browser]
+    Frontend[Frontend - Next.js]
+    Backend[Backend - FastAPI]
+    Database[(MongoDB)]
+
+    User --HTTPS--> Frontend
+    Frontend --JWT Cookie Fetch--> Backend
+    Backend --CRUD--> Database
+```
+
 #### Diagram Showing Infrastructure
 
 ```mermaid
