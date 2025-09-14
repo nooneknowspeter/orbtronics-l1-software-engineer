@@ -102,6 +102,12 @@ export default function Dashboard() {
     exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
   };
 
+  const taskVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
+  };
+
   return (
     <>
       <div className="h-screen flex flex-col">
@@ -272,60 +278,73 @@ export default function Dashboard() {
 
         {/* tasks */}
         <ul className="flex-1 w-full p-4 space-y-4">
-          {tasks ? (
-            tasks.map((task) => (
-              <div key={task.task_id} className="indicator w-full">
-                {task.priority === "high" && (
-                  <span className="indicator-item indicator-start status status-error"></span>
-                )}
+          <AnimatePresence>
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <motion.div
+                  key={task.task_id}
+                  className="indicator w-full"
+                  variants={taskVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  layout
+                >
+                  {task.priority === "high" && (
+                    <span className="indicator-item indicator-start status status-error"></span>
+                  )}
 
-                {task.priority === "medium" && (
-                  <span className="indicator-item indicator-start status status-warning"></span>
-                )}
+                  {task.priority === "medium" && (
+                    <span className="indicator-item indicator-start status status-warning"></span>
+                  )}
 
-                {task.priority === "low" && (
-                  <span className="indicator-item indicator-start status status-success"></span>
-                )}
+                  {task.priority === "low" && (
+                    <span className="indicator-item indicator-start status status-success"></span>
+                  )}
 
-                <li className="w-full flex justify-between items-start border rounded p-4 shadow">
-                  <div>
-                    <div>{task.title}</div>
-                    <div className="text-xs uppercase font-semibold opacity-60">
-                      {task.status}
+                  <li className="w-full flex justify-between items-start border rounded p-4 shadow">
+                    <div>
+                      <div>{task.title}</div>
+                      <div className="text-xs uppercase font-semibold opacity-60">
+                        {task.status}
+                      </div>
+                      <div className="text-xs">{task.due_date}</div>
+                      <p className="text-xs">{task.description}</p>
                     </div>
-                    <p className="text-xs">{task.description}</p>
-                  </div>
 
-                  <div className="flex gap-2">
-                    <button
-                      className="btn btn-square btn-ghost"
-                      onClick={() => {
-                        (
-                          document.getElementById(
-                            "task_modal_edit",
-                          ) as HTMLDialogElement
-                        )?.showModal();
+                    <div className="flex gap-2">
+                      <button
+                        className="btn btn-square btn-ghost"
+                        onClick={() => {
+                          (
+                            document.getElementById(
+                              "task_modal_edit",
+                            ) as HTMLDialogElement
+                          )?.showModal();
 
-                        setSelectedTaskId(task.task_id);
-                      }}
-                    >
-                      <FaPencil />
-                    </button>
-                    <button
-                      className="btn btn-square btn-ghost"
-                      onClick={() => {
-                        deleteTask(task.task_id);
-                      }}
-                    >
-                      <FaRegTrashCan />
-                    </button>
-                  </div>
-                </li>
+                          setSelectedTaskId(task.task_id);
+                        }}
+                      >
+                        <FaPencil />
+                      </button>
+                      <button
+                        className="btn btn-square btn-ghost"
+                        onClick={() => {
+                          deleteTask(task.task_id);
+                        }}
+                      >
+                        <FaRegTrashCan />
+                      </button>
+                    </div>
+                  </li>
+                </motion.div>
+              ))
+            ) : (
+              <div className="flex flex-row items-center w-screen font-bold">
+                {" No Tasks "}
               </div>
-            ))
-          ) : (
-            <li className="font-bold">{" No Tasks "}</li>
-          )}
+            )}
+          </AnimatePresence>
         </ul>
       </div>
     </>
