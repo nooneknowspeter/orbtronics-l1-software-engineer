@@ -20,12 +20,7 @@ export default function App({ children }: { children: React.ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading)
-    return (
-      <div className="w-screen h-screen justify-center items-center flex flex-row">
-        <span className="loading loading-spinner loading-xl"></span>
-      </div>
-    );
+  if (loading) return <LoadingPage />;
 
   return (
     <AuthProvider initialAuthenticated={authenticated}>
