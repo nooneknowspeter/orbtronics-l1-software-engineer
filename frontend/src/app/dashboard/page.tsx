@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaGripLines, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 import { useTask } from "@/context/task-context";
+import { Priority, Status } from "@/lib/tasks";
 
 type TaskData = {
   task_id: string;
@@ -18,22 +19,73 @@ type TaskData = {
   priority: string;
 };
 
+type Filters = {
+  dueDate?: "today" | "week" | "overdue";
+  status?: Status;
+  priority?: Priority;
+};
+
 export default function Dashboard() {
   const { authenticated } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState<TaskData[]>();
+  const [allTasks, setAllTasks] = useState<TaskData[]>([]);
+  const [tasks, setTasks] = useState<TaskData[]>([]);
   const [isFiltersHidden, setFilterHidden] = useState<boolean>(false);
   const { setSelectedTaskId } = useTask();
+  const [filters, setFilters] = useState<Filters>({});
 
   async function fetchData() {
     try {
       const data = await getTasks();
+      setAllTasks(data);
       setTasks(data);
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
+  }
+
+  async function filterTasks(newFilters: Filters) {
+    setFilters(newFilters);
+
+    let filtered = [...allTasks];
+    const today = new Date();
+
+    switch (newFilters.dueDate) {
+      case "today":
+        filtered = filtered.filter(
+          (task) =>
+            new Date(task.due_date).toDateString() === today.toDateString(),
+        );
+        break;
+      case "week":
+        const nextWeek = new Date();
+        nextWeek.setDate(today.getDate() + 7);
+        filtered = filtered.filter(
+          (task) =>
+            new Date(task.due_date) >= today &&
+            new Date(task.due_date) <= nextWeek,
+        );
+        break;
+      case "overdue":
+        filtered = filtered.filter((task) => new Date(task.due_date) < today);
+        break;
+      default:
+        break;
+    }
+
+    if (newFilters.status) {
+      filtered = filtered.filter((task) => task.status === newFilters.status);
+    }
+
+    if (newFilters.priority) {
+      filtered = filtered.filter(
+        (task) => task.priority === newFilters.priority,
+      );
+    }
+
+    setTasks(filtered);
   }
 
   useEffect(() => {
@@ -101,24 +153,36 @@ export default function Dashboard() {
                         className="btn btn-square"
                         type="reset"
                         value="×"
+                        onClick={(e) => {
+                          filterTasks({ ...filters, dueDate: undefined });
+                        }}
                       />
                       <input
                         className="btn"
                         type="radio"
-                        name="frameworks"
+                        name="due_date"
                         aria-label="Today"
+                        onClick={() => {
+                          filterTasks({ ...filters, dueDate: "today" });
+                        }}
                       />
                       <input
                         className="btn"
                         type="radio"
-                        name="frameworks"
+                        name="due_date"
                         aria-label="Week"
+                        onClick={() => {
+                          filterTasks({ ...filters, dueDate: "week" });
+                        }}
                       />
                       <input
                         className="btn"
                         type="radio"
-                        name="frameworks"
+                        name="due_date"
                         aria-label="Over Due"
+                        onClick={() => {
+                          filterTasks({ ...filters, dueDate: "overdue" });
+                        }}
                       />
                     </form>
 
@@ -128,24 +192,36 @@ export default function Dashboard() {
                         className="btn btn-square"
                         type="reset"
                         value="×"
+                        onClick={(e) => {
+                          filterTasks({ ...filters, status: undefined });
+                        }}
                       />
                       <input
                         className="btn"
                         type="radio"
-                        name="frameworks"
+                        name="status"
                         aria-label="To Do"
+                        onClick={() =>
+                          filterTasks({ ...filters, status: "todo" })
+                        }
                       />
                       <input
                         className="btn"
                         type="radio"
-                        name="frameworks"
+                        name="status"
                         aria-label="In Progress"
+                        onClick={() =>
+                          filterTasks({ ...filters, status: "in_progress" })
+                        }
                       />
                       <input
                         className="btn"
                         type="radio"
-                        name="frameworks"
+                        name="status"
                         aria-label="Done"
+                        onClick={() =>
+                          filterTasks({ ...filters, status: "done" })
+                        }
                       />
                     </form>
 
@@ -155,24 +231,36 @@ export default function Dashboard() {
                         className="btn btn-square"
                         type="reset"
                         value="×"
+                        onClick={(e) => {
+                          filterTasks({ ...filters, priority: undefined });
+                        }}
                       />
                       <input
                         className="btn btn-soft btn-error"
                         type="radio"
-                        name="frameworks"
+                        name="priority"
                         aria-label="High"
+                        onClick={() =>
+                          filterTasks({ ...filters, priority: "high" })
+                        }
                       />
                       <input
                         className="btn btn-soft btn-warning"
                         type="radio"
-                        name="frameworks"
+                        name="priority"
                         aria-label="Medium"
+                        onClick={() =>
+                          filterTasks({ ...filters, priority: "medium" })
+                        }
                       />
                       <input
                         className="btn btn-soft btn-success"
                         type="radio"
-                        name="frameworks"
+                        name="priority"
                         aria-label="Low"
+                        onClick={() =>
+                          filterTasks({ ...filters, priority: "low" })
+                        }
                       />
                     </form>
                   </motion.div>
