@@ -3,8 +3,9 @@
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Navbar, AuthModal } from "@/components/components";
-import { AuthProvider } from "@/context/auth-context";
+import { Navbar, AuthModal, TaskModal } from "@/components/components";
+import { AuthProvider, UserProvider, TaskProvider } from "@/context/context";
+import { LoadingPage } from "@/components/components";
 
 export default function App({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -24,20 +25,26 @@ export default function App({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthProvider initialAuthenticated={authenticated}>
-      <Navbar />
-      <AuthModal mode="login" key="login" id="auth_modal_login" />
-      <AuthModal mode="signup" key="signup" id="auth_modal_signup" />
+      <UserProvider>
+        <TaskProvider>
+          <Navbar />
+          <AuthModal mode="login" key="login" id="auth_modal_login" />
+          <AuthModal mode="signup" key="signup" id="auth_modal_signup" />
+          <TaskModal mode="create" id="task_modal_create" />
+          <TaskModal mode="edit" id="task_modal_edit" />
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </TaskProvider>
+      </UserProvider>
     </AuthProvider>
   );
 }
