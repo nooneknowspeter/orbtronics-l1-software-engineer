@@ -45,8 +45,8 @@ class TaskDataInput(BaseModel):
 
 
 class TaskDataPartial(BaseModel):
-    title: str | None
-    description: str | None
-    status: str | None
-    priority: str | None
-    due_date: str | None
+    title: str | None = None
+    description: str | None = None
+    status: str | None = None
+    priority: str | None = None
+    due_date: str | None = None
