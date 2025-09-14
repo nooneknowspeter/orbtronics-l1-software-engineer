@@ -25,10 +25,6 @@ export default function Dashboard() {
   const [isFiltersHidden, setFilterHidden] = useState<boolean>(false);
   const { setSelectedTaskId } = useTask();
 
-  if (!authenticated) {
-    redirect("/");
-  }
-
   async function fetchData() {
     try {
       const data = await getTasks();
@@ -41,6 +37,8 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
+    if (!authenticated) redirect("/");
+
     fetchData();
   }, []);
 
