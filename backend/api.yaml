@@ -11,6 +11,8 @@ tags:
 servers:
   - url: http://localhost:8000/api
     description: development environment
+  - url: http://ec2-18-210-134-224.compute-1.amazonaws.com:8000/
+    description: production environment
 
 paths:
   /auth/signup:
