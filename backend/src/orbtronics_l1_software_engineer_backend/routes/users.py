@@ -12,7 +12,14 @@ router = APIRouter(prefix="/api", tags=["users"])
 
 @router.get("/whoami", status_code=status.HTTP_200_OK)
 def whoAmI(request: Request) -> dict[str, str]:
-    token: str = request.cookies["access_token"]
+    auth_header: str | None = request.headers.get("Authorization")
+    token: str | None = None
+
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ", 1)[1]
+    else:
+        token = request.cookies.get("access_token")
+
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="missing token"
