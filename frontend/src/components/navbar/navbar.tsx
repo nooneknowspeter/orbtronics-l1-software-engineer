@@ -4,16 +4,11 @@ import { ThemeController } from "../components";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { useUsername } from "@/context/user-context";
-import { useEffect } from "react";
 import { logOut } from "@/lib/auth";
 
 export default function Navbar() {
   const { authenticated } = useAuth();
   const { username } = useUsername();
-
-  useEffect(() => {
-    console.log(username);
-  });
 
   return (
     <div className="navbar shadow-sm">
@@ -51,7 +46,7 @@ export default function Navbar() {
               </div>
               <ul
                 tabIndex={0}
-                className="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm"
+                className="menu dropdown-content rounded-box z-1 mt-4 w-52 p-2 shadow-sm gap-2"
               >
                 <li>
                   <button className="btn btn-primary" onClick={logOut}>
@@ -103,13 +98,47 @@ export default function Navbar() {
               </div>
               <ul
                 tabIndex={0}
-                className="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm"
+                className="menu dropdown-content rounded-box z-1 mt-4 w-52 p-2 shadow-sm gap-2"
               >
-                <li>
-                  <button className="btn btn-primary" onClick={logOut}>
-                    Log Out
-                  </button>
-                </li>
+                {authenticated ? (
+                  <li>
+                    <button className="btn btn-primary" onClick={logOut}>
+                      Log Out
+                    </button>
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() =>
+                          (
+                            document.getElementById(
+                              "auth_modal_login",
+                            ) as HTMLDialogElement | null
+                          )?.showModal()
+                        }
+                      >
+                        Log In
+                      </button>
+                    </li>
+
+                    <li>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() =>
+                          (
+                            document.getElementById(
+                              "auth_modal_signup",
+                            ) as HTMLDialogElement
+                          )?.showModal()
+                        }
+                      >
+                        Sign Up
+                      </button>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </>
