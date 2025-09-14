@@ -61,11 +61,9 @@ def readTasks(
     if priority:
         query["priority"] = priority
 
-    print(due)
-
     match due:
         case TaskDueEnum.overdue.value:
-            query["due_date"] = {"$eq": date.today().isoformat()}
+            query["due_date"] = {"$lt": date.today().isoformat()}
         case TaskDueEnum.week.value:
             query["due_date"] = {
                 "$gte": date.today().isoformat(),
